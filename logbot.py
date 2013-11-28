@@ -2,10 +2,14 @@ import socket
 import sys
 import time
 import re
+import os
 
 server = "irc.freenode.net"       #settings
 channel = "#web"
 botnick = "LauraK"
+
+os.environ['TZ'] = 'Europe/London'
+time.tzset()
 
 irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #defines the socket
 print "connecting to:"+server
