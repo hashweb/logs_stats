@@ -3,13 +3,17 @@ import sys
 import time
 import re
 import os
+import sys
 
 server = "irc.freenode.net"       #settings
-channel = "#web"
+channel = sys.argv[1] or "#web"
 botnick = "LauraK"
+logFolder = sys.argv[2] or "logs"
 
-os.environ['TZ'] = 'Europe/London'
-time.tzset()
+# Will only work on UNIX
+if (hasattr(time, 'tzset')):
+	os.environ['TZ'] = 'Europe/London'
+	time.tzset()
 
 irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #defines the socket
 print "connecting to:"+server
@@ -24,26 +28,26 @@ while 1:    #puts it in a loop
 	time_stamp = time.strftime("%H:%M:%S")
 	dateStamp = time.strftime("%Y-%m-%d")
 	#print text   #print text to console
-	with open("%s.log" % dateStamp, "a") as log:
+	with open(logFolder + "/%s.log" % dateStamp, "a") as log:
 		for line in text.split("\n"):
 			if (line): #some lines are just "" causing the logs to have blank lines
 				print line
 				# User is talking
-				if re.match(":(\w.+)\!.*:(\w.+)$", line):
-					user = re.search(":(\w.+)\!.*:(\w.+)$", line).group(1)
-					msg = re.search(":(\w.+)\!.*:(\w.+)$", line).group(2)
+				if re.match(":(.+)\!.*:(\w.+)$", line):
+					user = re.search(":(.+)\!.*:(\w.+)$", line).group(1)
+					msg = re.search(":(.+)\!.*:(\w.+)$", line).group(2)
 					if user != "NickServ":
 						log.write("%s <%s> %s" % (time_stamp, user, msg))
 				# User joins channel
 				# for some reason Joins and Parts need a \n whereas talking doesn't
 				elif re.search("JOIN\s", line):
-					user = re.search(":(\w.+)\!([^\s]*)", line).group(1)
-					host = re.search(":(\w.+)\!([^\s]*)", line).group(2)
+					user = re.search(":(.+)\!([^\s]*)", line).group(1)
+					host = re.search(":(.+)\!([^\s]*)", line).group(2)
 					log.write("%s --> <%s> (%s) joins %s \n" % (time_stamp, user, host, channel))
 				# User parts channel
 				elif re.search("PART\s", line):
-					user = re.search(":(\w.+)\!([^\s]*)", line).group(1)
-					host = re.search(":(\w.+)\!([^\s]*)", line).group(2)
+					user = re.search(":(.+)\!([^\s]*)", line).group(1)
+					host = re.search(":(.+)\!([^\s]*)", line).group(2)
 					log.write("%s <-- <%s> (%s) parts %s \n" % (time_stamp, user, host, channel))
 
 			
