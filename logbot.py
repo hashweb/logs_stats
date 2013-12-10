@@ -7,8 +7,8 @@ import sys
 
 server = "irc.freenode.net"       #settings
 channel = sys.argv[1] or "#web"
-botnick = "LauraK"
 logFolder = sys.argv[2] or "logs"
+botnick = sys.argv[3] or "LauraK"
 
 # Will only work on UNIX
 if (hasattr(time, 'tzset')):
