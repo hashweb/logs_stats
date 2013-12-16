@@ -1,0 +1,1 @@
+The host column will need to stay in the messages table so we can know what hostname the user was using at the time of that message, if the hostname was in the user table we would not have this information.
