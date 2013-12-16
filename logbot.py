@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*- 
+
 import socket
 import sys
 import time
@@ -5,9 +7,12 @@ import re
 import os
 import sys
 
+# abstraction layer between this and postgres
+from logViewer_model import LogviewerDB
+
 server = "irc.freenode.net"       #settings
-channel = sys.argv[1] or "#web"
-botnick = "LauraK"
+channel = sys.argv[1] or "#web-testing"
+botnick = "hashweb_logStats"
 logFolder = sys.argv[2] or "logs"
 
 # Will only work on UNIX
@@ -34,8 +39,8 @@ while 1:    #puts it in a loop
 				print line
 				# User is talking
 				if re.match(":(.+)\!.*:(\w.+)$", line):
-					user = re.search(":(.+)\!.*:(\w.+)$", line).group(1)
-					msg = re.search(":(.+)\!.*:(\w.+)$", line).group(2)
+					user = re.search(":(.+)\!.*:(.+)$", line).group(1)
+					msg = re.search(":(.+)\!.*:(.+)$", line).group(2)
 					if user != "NickServ":
 						log.write("%s <%s> %s" % (time_stamp, user, msg))
 				# User joins channel
@@ -49,6 +54,19 @@ while 1:    #puts it in a loop
 					user = re.search(":(.+)\!([^\s]*)", line).group(1)
 					host = re.search(":(.+)\!([^\s]*)", line).group(2)
 					log.write("%s <-- <%s> (%s) parts %s \n" % (time_stamp, user, host, channel))
+				# User quits channel
+				elif re.search("QUIT", line):
+					user = re.search(":(.+)\!([^\s]*)", line).group(1)
+					host = re.search(":(.+)\!([^\s]*)", line).group(2)
+					log.write("%s <-- <%s> (%s) quits %s \n" % (time_stamp, user, host, channel))
+				# User Emotion
+				elif re.search("ACTION", line):
+					# 2 after, 1 for \n, the other for that weird character
+					user = re.search(":(.+)\!.*(?<=ACTION)\s(.*)\W{2}$", line).group(1)
+					msg	 = re.search(":(.+)\!.*(?<=ACTION)\s(.*)\W{2}$", line).group(2)
+					log.write("%s <%s> *%s* \n" % (time_stamp, user, msg))
+				log.write(line);
+
 
 			
 
