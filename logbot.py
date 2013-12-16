@@ -12,8 +12,8 @@ from logViewer_model import LogviewerDB
 
 server = "irc.freenode.net"       #settings
 channel = sys.argv[1] or "#web-testing"
-botnick = "hashweb_logStats"
 logFolder = sys.argv[2] or "logs"
+botnick = sys.argv[3] or "LauraK"
 
 # Will only work on UNIX
 if (hasattr(time, 'tzset')):
