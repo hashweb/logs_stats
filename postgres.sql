@@ -58,7 +58,6 @@ CREATE TABLE messages (
     "user" integer NOT NULL,
     "timestamp" timestamp without time zone NOT NULL,
     content text,
-    host text,
     action action,
     id integer NOT NULL
 );
@@ -93,7 +92,8 @@ ALTER SEQUENCE messages_id_seq OWNED BY messages.id;
 
 CREATE TABLE users (
     nick text,
-    id integer NOT NULL
+    id integer NOT NULL,
+    host character varying
 );
 
 
@@ -138,7 +138,7 @@ ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regcl
 -- Data for Name: messages; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY messages ("user", "timestamp", content, host, action, id) FROM stdin;
+COPY messages ("user", "timestamp", content, action, id) FROM stdin;
 \.
 
 
@@ -153,7 +153,7 @@ SELECT pg_catalog.setval('messages_id_seq', 1, false);
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY users (nick, id) FROM stdin;
+COPY users (nick, id, host) FROM stdin;
 \.
 
 
@@ -170,6 +170,22 @@ SELECT pg_catalog.setval('users_id_seq', 1, false);
 
 ALTER TABLE ONLY messages
     ADD CONSTRAINT messages_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_id_key UNIQUE (id);
+
+
+--
+-- Name: messages; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY messages
+    ADD CONSTRAINT messages FOREIGN KEY ("user") REFERENCES users(id);
 
 
 --

@@ -14,6 +14,7 @@ server = "irc.freenode.net"       #settings
 channel = sys.argv[1] or "#web-testing"
 logFolder = sys.argv[2] or "logs"
 botnick = sys.argv[3] or "LauraK"
+logviewerDB = LogviewerDB;
 
 # Will only work on UNIX
 if (hasattr(time, 'tzset')):
@@ -41,29 +42,35 @@ while 1:    #puts it in a loop
 				if re.match(":(.+)\!.*:(\w.+)$", line):
 					user = re.search(":(.+)\!.*:(.+)$", line).group(1)
 					msg = re.search(":(.+)\!.*:(.+)$", line).group(2)
+					action = "talk"
 					if user != "NickServ":
 						log.write("%s <%s> %s" % (time_stamp, user, msg))
+						logviewerDB.add_message()
 				# User joins channel
 				# for some reason Joins and Parts need a \n whereas talking doesn't
 				elif re.search("JOIN\s", line):
 					user = re.search(":(.+)\!([^\s]*)", line).group(1)
 					host = re.search(":(.+)\!([^\s]*)", line).group(2)
+					action = "join"
 					log.write("%s --> <%s> (%s) joins %s \n" % (time_stamp, user, host, channel))
 				# User parts channel
 				elif re.search("PART\s", line):
 					user = re.search(":(.+)\!([^\s]*)", line).group(1)
 					host = re.search(":(.+)\!([^\s]*)", line).group(2)
+					action = "part"
 					log.write("%s <-- <%s> (%s) parts %s \n" % (time_stamp, user, host, channel))
 				# User quits channel
 				elif re.search("QUIT", line):
 					user = re.search(":(.+)\!([^\s]*)", line).group(1)
 					host = re.search(":(.+)\!([^\s]*)", line).group(2)
+					action = "quit"
 					log.write("%s <-- <%s> (%s) quits %s \n" % (time_stamp, user, host, channel))
 				# User Emotion
 				elif re.search("ACTION", line):
 					# 2 after, 1 for \n, the other for that weird character
 					user = re.search(":(.+)\!.*(?<=ACTION)\s(.*)\W{2}$", line).group(1)
 					msg	 = re.search(":(.+)\!.*(?<=ACTION)\s(.*)\W{2}$", line).group(2)
+					action = "emote"
 					log.write("%s <%s> *%s* \n" % (time_stamp, user, msg))
 				log.write(line);
 
