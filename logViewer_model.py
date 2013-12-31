@@ -17,14 +17,29 @@ class LogviewerDB:
 		
 		# conn.curser will return a cursor object, you can use this to perform queries
 		self.cursor = conn.cursor()
+		self.conn = conn
 		print "connected!\n"
 
-	def add_message(self):
-		"INSERT INTO messages (\"user\", content, action) VALUES (%d, %s, %s)"
+	def add_message(self, user, host, msg):
+		# Was this message from a user we already have in our database?
+		# If so return the userID.
+		userID = self.check_user_host_exists(user, host) or False
+		print 'userID is %s' % userID
+		# If userID is False, store the new combo then get back the userID
+		if not userID:
+			self.cursor.execute("INSERT INTO users (\"user\", \"host\") VALUES (%s, %s)", (user, host))
+			self.conn.commit()
+			# We should now have an ID for our new user/host combo
+			userID = self.check_user_host_exists(user, host);
+
+		print 'inserting Data'
+		self.cursor.execute("INSERT INTO messages (\"user\", \"content\", \"action\") VALUES (%s, %s, %s)", (userID, msg, 'message'))
+		self.conn.commit()
+		print 'Done'
 
 	# Check if user exists then return the user ID, if not return false
 	def check_user_host_exists(self, user, host):
-		self.cursor.execute("SELECT * FROM users WHERE \"user\"='%s' AND host='%s'" % (user, host))
+		self.cursor.execute("SELECT * FROM users WHERE \"user\"= %s AND host=%s", (user, host))
 		if self.cursor.rowcount:
 			return self.cursor.fetchone()[1]
 		else:
@@ -32,7 +47,7 @@ class LogviewerDB:
 
 def main():
 	logviewerDB = LogviewerDB()
-	logviewerDB.check_user_host_exists('Jayflux', 'Jayflux@lol.com')
+	print logviewerDB.check_user_host_exists('Jayflux', 'Jayflux@lol.com')
 
 if __name__ == "__main__":
 	main()
