@@ -29,7 +29,9 @@ def writeLog(text):
 		for line in text.split("\n"):
 			if (line): #some lines are just "" causing the logs to have blank lines
 				# User is talking
-				if re.match(":(.+)\!.*:(\w.+)$", line):
+				print line
+
+				if re.match(":(.+)\![^\s]* PRIVMSG %s :(\w.+)$" % channel, line):
 					# http://rubular.com/r/DgRGvzImQb
 					user = re.search("^:?(\S+)!(\S+)@(\S+)\s(\S+) (#?\S+) :(.+)", line).group(1)
 					host = re.search("^:?(\S+)!(\S+)@(\S+)\s(\S+) (#?\S+) :(.+)", line).group(3)
@@ -41,23 +43,26 @@ def writeLog(text):
 						logviewerDB.add_message(user, host, msg)
 				# User joins channel
 				# for some reason Joins and Parts need a \n whereas talking doesn't
-				elif re.search("JOIN\s", line):
+				elif re.search(":(.+)\!.* JOIN [^:]?(.+)$", line):
 					user = re.search(":(.+)\!([^\s]*)", line).group(1)
 					host = re.search(":(.+)\!([^\s]*)", line).group(2)
 					action = "join"
 					log.write("%s --> <%s> (%s) joins %s \n" % (time_stamp, user, host, channel))
+					logviewerDB.add_join(user, host)
 				# User parts channel
 				elif re.search("PART\s", line):
 					user = re.search(":(.+)\!([^\s]*)", line).group(1)
 					host = re.search(":(.+)\!([^\s]*)", line).group(2)
 					action = "part"
 					log.write("%s <-- <%s> (%s) parts %s \n" % (time_stamp, user, host, channel))
+					logviewerDB.add_part(user, host)
 				# User quits channel
-				elif re.search("QUIT", line):
+				elif re.search(":(.+)\!.* QUIT :(.+)$", line):
 					user = re.search(":(.+)\!([^\s]*)", line).group(1)
 					host = re.search(":(.+)\!([^\s]*)", line).group(2)
 					action = "quit"
 					log.write("%s <-- <%s> (%s) quits %s \n" % (time_stamp, user, host, channel))
+					logviewerDB.add_quit(user, host)
 				# User Emotion
 				elif re.search("ACTION", line):
 					# 2 after, 1 for \n, the other for that weird character
@@ -65,8 +70,6 @@ def writeLog(text):
 					msg	 = re.search(":(.+)\!.*(?<=ACTION)\s(.*)\W{2}$", line).group(2)
 					action = "emote"
 					log.write("%s <%s> *%s* \n" % (time_stamp, user, msg))
-
-				print line
 
 
 		if text.find('PING') != -1:                          #check if 'PING' is found
