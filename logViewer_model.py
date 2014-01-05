@@ -7,7 +7,7 @@ class LogviewerDB:
 
 	def __init__(self):
 		# DB connection string
-		conn_string = "host='127.0.0.1' dbname='postgres' user='postgres' password='strangehat'"
+		conn_string = "host='127.0.0.1' dbname='logs_stats' user='postgres' password='strangehat'"
 		
 		# Print connection string
 		print "Connecting to database\n -> %s" % (conn_string)
@@ -32,6 +32,9 @@ class LogviewerDB:
 	def add_quit(self, user, host):
 		self.__add_message(user, host, '', 'quit')
 
+	def add_emote(self, user, host, msg,):
+		self.__add_message(user, host, msg, 'emote')
+
 	def __add_message(self, user, host, msg, action):
 		# Was this message from a user we already have in our database?
 		# If so return the userID.
@@ -43,7 +46,10 @@ class LogviewerDB:
 			# We should now have an ID for our new user/host combo
 			userID = self.check_user_host_exists(user, host);
 
-		self.cursor.execute("INSERT INTO messages (\"user\", \"content\", \"action\") VALUES (%s, %s, %s)", (userID, msg, action))
+		if (action == 'message' or action == 'emote'):	
+			self.cursor.execute("INSERT INTO messages (\"user\", \"content\", \"action\") VALUES (%s, %s, %s)", (userID, msg, action))
+		else:
+			self.cursor.execute("INSERT INTO messages (\"user\", \"action\") VALUES (%s, %s)", (userID, action))
 		self.conn.commit()
 
 	# Check if user exists then return the user ID, if not return false
@@ -54,9 +60,17 @@ class LogviewerDB:
 		else:
 			return False
 
+	def resetData(self):
+		self.cursor.execute("DELETE FROM users;")
+		self.cursor.execute("DELETE FROM messages;")
+		self.cursor.execute("ALTER SEQUENCE messages_id_seq RESTART WITH 1;")
+		self.cursor.execute("ALTER SEQUENCE users_id_seq RESTART WITH 1;")
+		self.conn.commit()
+
+
 def main():
 	logviewerDB = LogviewerDB()
-	print logviewerDB.check_user_host_exists('Jayflux', 'Jayflux@lol.com')
+	logviewerDB.resetData();
 
 if __name__ == "__main__":
 	main()

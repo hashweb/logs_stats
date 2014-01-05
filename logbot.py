@@ -6,6 +6,7 @@ import time
 import re
 import os
 import sys
+import threading
 
 # abstraction layer between this and postgres
 from logViewer_model import LogviewerDB
@@ -37,7 +38,6 @@ def writeLog(text):
 					host = re.search("^:?(\S+)!(\S+)@(\S+)\s(\S+) (#?\S+) :(.+)", line).group(3)
 					msg = re.search("^:?(\S+)!(\S+)@(\S+)\s(\S+) (#?\S+) :(.+)", line).group(6)
 					action = 'message'
-					action = "talk"
 					if user != "NickServ":
 						log.write("%s <%s> %s" % (time_stamp, user, msg))
 						logviewerDB.add_message(user, host, msg)
@@ -70,6 +70,7 @@ def writeLog(text):
 					msg	 = re.search(":(.+)\!.*(?<=ACTION)\s(.*)\W{2}$", line).group(2)
 					action = "emote"
 					log.write("%s <%s> *%s* \n" % (time_stamp, user, msg))
+					logviewerDB.add_emote(user, host, msg)
 
 
 		if text.find('PING') != -1:                          #check if 'PING' is found
