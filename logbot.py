@@ -66,8 +66,9 @@ def writeLog(text):
 				# User Emotion
 				elif re.search("ACTION", line):
 					# 2 after, 1 for \n, the other for that weird character
-					user = re.search(":(.+)\!.*(?<=ACTION)\s(.*)\W{2}$", line).group(1)
-					msg	 = re.search(":(.+)\!.*(?<=ACTION)\s(.*)\W{2}$", line).group(2)
+					user = re.search("^:?(\S+)!(\S+)@(\S+)\s(\S+) (#?\S+) :(.+)", line).group(1)
+					host = re.search("^:?(\S+)!(\S+)@(\S+)\s(\S+) (#?\S+) :(.+)", line).group(3)
+					msg = re.search("^:?(\S+)!(\S+)@(\S+)\s(\S+) (#?\S+) :(.+)", line).group(6)
 					action = "emote"
 					log.write("%s <%s> *%s* \n" % (time_stamp, user, msg))
 					logviewerDB.add_emote(user, host, msg)
