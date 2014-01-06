@@ -7,6 +7,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+SET TIMEZONE TO 'Europe/London';
 
 --
 -- Name: logs_stats; Type: COMMENT; Schema: -; Owner: postgres
@@ -59,7 +60,7 @@ CREATE TABLE messages (
     content text,
     action action,
     id integer NOT NULL,
-    "timestamp" timestamp without time zone DEFAULT now()
+    "timestamp" timestamp with time zone DEFAULT now()
 );
 
 
