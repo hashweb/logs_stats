@@ -17,7 +17,7 @@ A config.json file needs to be created and inserted into the root. The current s
         "host": "Your host, usually 127.0.0.1",
 		"dbname": "logs_stats",
 		"user": "your DB User",
-		"password": "Your DB Password""
+		"password": "Your DB Password"
     },    
     "vm_config" : {
 		"shared_folder": {
