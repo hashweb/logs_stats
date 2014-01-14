@@ -11,7 +11,7 @@ import threading
 # abstraction layer between this and postgres
 from logViewer_model import LogviewerDB
 
-server = "irc.freenode.net"       #settings
+server = "adams.freenode.net"       #settings
 channel = sys.argv[1] or "#web-testing"
 logFolder = sys.argv[2] or "logs"
 botnick = sys.argv[3] or "LauraK2"
