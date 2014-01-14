@@ -36,6 +36,8 @@ def writeLog(text):
 				except UnicodeDecodeError:
 					line = line.decode('iso-8859-1')
 
+				# still getting UnicodeEncodeError: 'ascii' codec can't encode character u'\xa3'
+
 				if re.match(":(.+)\![^\s]* PRIVMSG %s :(\w.+)$" % channel, line):
 					# http://rubular.com/r/DgRGvzImQb
 					user = re.search("^:?(\S+)!(\S+)@(\S+)\s(\S+) (#?\S+) :(.+)", line).group(1)
