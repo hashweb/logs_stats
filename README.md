@@ -8,7 +8,7 @@ Getting started
 You're best of using a VM (Virtualbox), a vagrantFile is already provided so once vagrant is installed you can just vagrantUp.
 
 Inside your virtual machine you will need to install postgresql.
-Once your postgres is up and running
+Once your postgres is up and running you will need to run the logs_stats.sql against the database to create your tables
 
 A config.json file needs to be created and inserted into the root. The current structure should look something like this.
 ```json
@@ -28,3 +28,4 @@ A config.json file needs to be created and inserted into the root. The current s
 	}
 }
 ```
+logs.hashweb.org
