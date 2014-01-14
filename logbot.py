@@ -31,6 +31,10 @@ def writeLog(text):
 			if (line): #some lines are just "" causing the logs to have blank lines
 				# User is talking
 				print line
+				try:
+					line = line.decode('UTF-8')
+				except UnicodeDecodeError:
+					line = line.decode('iso-8859-1')
 
 				if re.match(":(.+)\![^\s]* PRIVMSG %s :(\w.+)$" % channel, line):
 					# http://rubular.com/r/DgRGvzImQb
