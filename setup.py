@@ -39,10 +39,9 @@ with open('config.json', 'r') as configFile:
 userName = data['db']['user']
 userPass = data['db']['password']
 
-subprocess.call(['apt-get', 'install', '-y', 'postgresql', 'libpq-dev', 'python-dev'])
-subprocess.call(['pip', 'install', '-y', 'psycopg2'])
+subprocess.call(['apt-get', 'install', '-y', 'postgresql', 'libpq-dev', 'python-dev', 'python-pip'])
+subprocess.call(['pip', 'install', 'psycopg2'])
 
-getpass.getpass('')
-os.system('echo "CREATE ROLE %s LOGIN ENCRYPTED PASSWORD %s;" | sudo -u postgres psql' % (userPass, userName))
+os.system('echo "CREATE ROLE %s LOGIN ENCRYPTED PASSWORD \'%s\';" | sudo -u postgres psql' % (userName, userPass))
 os.system('echo "CREATE DATABASE logs_stats OWNER %s;" | sudo -u postgres psql' % userName)
-os.system('sudo -u postgres psql < logs_stats.sql')
+os.system('sudo -u postgres psql logs_stats < logs_stats.sql')
