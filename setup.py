@@ -44,4 +44,4 @@ subprocess.call(['pip', 'install', 'psycopg2'])
 
 os.system('echo "CREATE ROLE %s LOGIN ENCRYPTED PASSWORD \'%s\';" | sudo -u postgres psql' % (userName, userPass))
 os.system('echo "CREATE DATABASE logs_stats OWNER %s;" | sudo -u postgres psql' % userName)
-os.system('sudo -u postgres psql < logs_stats.sql')
+os.system('sudo -u postgres psql logs_stats < logs_stats.sql')
