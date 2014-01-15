@@ -31,6 +31,7 @@ def writeLog(text):
 			if (line): #some lines are just "" causing the logs to have blank lines
 				# User is talking
 				print line
+				print repr(line)
 				try:
 					line = line.decode('UTF-8')
 				except UnicodeDecodeError:
