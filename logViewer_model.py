@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import sys
+import json
 
 import psycopg2
 
@@ -7,7 +8,13 @@ class LogviewerDB:
 
 	def __init__(self):
 		# DB connection string
-		conn_string = "host='127.0.0.1' dbname='logs_stats' user='postgres' password='strangehat'"
+		try:
+			with open('config.json') as data:
+				config = json.load(data)
+
+			conn_string = "host='%s' dbname='%s' user='%s' password='%s'" % (config['db']['host'], config['db']['dbname'], config['db']['user'], config['db']['password'])
+		except IOError as e:
+			sys.exit("Error! No config file supplied, please create a config.json file in the root")
 		
 		# Print connection string
 		print "Connecting to database\n -> %s" % (conn_string)

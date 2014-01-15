@@ -1,5 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+require "JSON"
 
 Vagrant::Config.run do |config|
   # All Vagrant configuration is done here. The most common configuration
@@ -34,7 +35,9 @@ Vagrant::Config.run do |config|
   # Share an additional folder to the guest VM. The first argument is
   # an identifier, the second is the path on the guest to mount the
   # folder, and the third is the path on the host to the actual folder.
-  config.vm.share_folder "logviewer", "/home/jason/logviewer", "../logviewer"
+  data = JSON.parse(IO.read('config.json'))
+  data['vm_config']['shared_folder'].each { |item| config.vm.share_folder item['name'], item['path'], item['host_path'] }
+  # config.vm.share_folder "logviewer", "/home/jason/logviewer", "../logviewer"
 
   # Enable provisioning with Puppet stand alone.  Puppet manifests
   # are contained in a directory path relative to this Vagrantfile.

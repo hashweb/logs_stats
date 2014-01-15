@@ -11,7 +11,7 @@ import threading
 # abstraction layer between this and postgres
 from logViewer_model import LogviewerDB
 
-server = "irc.freenode.net"       #settings
+server = "adams.freenode.net"       #settings
 channel = sys.argv[1] or "#web-testing"
 logFolder = sys.argv[2] or "logs"
 botnick = sys.argv[3] or "LauraK2"
@@ -31,6 +31,13 @@ def writeLog(text):
 			if (line): #some lines are just "" causing the logs to have blank lines
 				# User is talking
 				print line
+				print repr(line)
+				try:
+					line = line.decode('UTF-8')
+				except UnicodeDecodeError:
+					line = line.decode('iso-8859-1')
+
+				# still getting UnicodeEncodeError: 'ascii' codec can't encode character u'\xa3'
 
 				if re.match(":(.+)\![^\s]* PRIVMSG %s :(\w.+)$" % channel, line):
 					# http://rubular.com/r/DgRGvzImQb
@@ -66,8 +73,9 @@ def writeLog(text):
 				# User Emotion
 				elif re.search("ACTION", line):
 					# 2 after, 1 for \n, the other for that weird character
-					user = re.search(":(.+)\!.*(?<=ACTION)\s(.*)\W{2}$", line).group(1)
-					msg	 = re.search(":(.+)\!.*(?<=ACTION)\s(.*)\W{2}$", line).group(2)
+					user = re.search("^:?(\S+)!(\S+)@(\S+)\s(\S+) (#?\S+) :(.+)", line).group(1)
+					host = re.search("^:?(\S+)!(\S+)@(\S+)\s(\S+) (#?\S+) :(.+)", line).group(3)
+					msg = re.search("^:?(\S+)!(\S+)@(\S+)\s(\S+) (#?\S+) :(.+)", line).group(6)
 					action = "emote"
 					log.write("%s <%s> *%s* \n" % (time_stamp, user, msg))
 					logviewerDB.add_emote(user, host, msg)
