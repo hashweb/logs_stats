@@ -1,4 +1,8 @@
 logs
 config.json
 *.pyc
+<<<<<<< Updated upstream
 .vagrant*
+=======
+Vagrantfile
+>>>>>>> Stashed changes
