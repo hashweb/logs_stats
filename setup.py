@@ -46,10 +46,8 @@ os.system('echo "CREATE ROLE %s LOGIN ENCRYPTED PASSWORD \'%s\';" | sudo -u post
 os.system('echo "CREATE DATABASE logs_stats OWNER %s;" | sudo -u postgres psql' % userName)
 os.system('sudo -u postgres psql logs_stats < logs_stats.sql')
 
-os.system('echo "ALTER TABLE public.messages_id_seq OWNER TO %s;" | sudo -u postgres psql' % userName)
-os.system('echo "ALTER TYPE public.action OWNER TO %s;" | sudo -u postgres psql' % userName)
-os.system('echo "ALTER TABLE public.messages OWNER TO %s;" | sudo -u postgres psql' % userName)
-os.system('echo "ALTER TABLE public.users OWNER TO %s;" | sudo -u postgres psql' % userName)
-os.system('echo "ALTER TABLE public.users_id_seq OWNER TO %s;" | sudo -u postgres psql' % userName)
-# Change owner
-os.system('echo "GRANT ALL ON SCHEMA public TO %s;" | sudo -u postgres psql' % userName)
+os.system('echo "ALTER TABLE messages_id_seq OWNER TO %s;" | sudo -u postgres psql logs_stats' % userName)
+os.system('echo "ALTER TYPE action OWNER TO %s;" | sudo -u postgres psql logs_stats' % userName)
+os.system('echo "ALTER TABLE messages OWNER TO %s;" | sudo -u postgres psql logs_stats' % userName)
+os.system('echo "ALTER TABLE users OWNER TO %s;" | sudo -u postgres psql logs_stats' % userName)
+os.system('echo "ALTER TABLE users_id_seq OWNER TO %s;" | sudo -u postgres psql logs_stats' % userName)
