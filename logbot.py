@@ -33,11 +33,12 @@ def writeLog(text):
 				print line
 				print repr(line)
 				try:
-					line = line.decode('UTF-8')
+					line = line.decode('UTF-8', 'ignore')
 				except UnicodeError:
-					line = line.decode('iso-8859-1')
+					line = line.decode('iso-8859-1', 'ignore')
 
 				# still getting UnicodeEncodeError: 'ascii' codec can't encode character u'\xa3'
+				# http://paste.pm/d99.sh
 
 				if re.match(":(.+)\![^\s]* PRIVMSG %s :(\w.+)$" % channel, line):
 					# http://rubular.com/r/DgRGvzImQb
