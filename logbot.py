@@ -34,7 +34,7 @@ def writeLog(text):
 				print repr(line)
 				try:
 					line = line.decode('UTF-8')
-				except UnicodeDecodeError:
+				except UnicodeError:
 					line = line.decode('iso-8859-1')
 
 				# still getting UnicodeEncodeError: 'ascii' codec can't encode character u'\xa3'
